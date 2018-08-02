@@ -14,10 +14,7 @@ fn test(uri: &str, expected: String) {
 // unit testing for index
 #[test]
 fn test_index() {
-    test("/", "Hello world!")
-    // let client = client();
-    // let response = client.get("/").dispatch().body_string();
-    // assert_eq!(response, Some("Hello world!".into()));
+    test("/", "Hello world!".to_string())
 }
 
 // unit testing for not found page

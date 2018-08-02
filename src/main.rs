@@ -2,8 +2,12 @@
 #![plugin(rocket_codegen)] //use plugin
 
 extern crate rocket;
+extern crate rocket_contrib;
 
 #[cfg(test)] mod tests;
+
+use rocket::Request;
+use rocket_contrib::Template;
 
 #[get("/")]
 fn index() -> &'static str {
@@ -16,13 +20,16 @@ fn hello(name: String) -> String {
 }
 
 #[catch(404)]
-fn not_found(req: &rocket::Request) -> String {
-    format!("Sorry, but '{}' is not a valid path!", req.uri())
+fn not_found(req: &Request) -> Template {
+    let mut map = std::collections::HashMap::new();
+    map.insert("path", req.uri().as_str());
+    Template::render("error/404", &map)
 }
 
 fn rocket() -> rocket::Rocket {
     rocket::ignite()
         .mount("/", routes![index, hello])
+        .attach(Template::fairing())
         .catch(catchers![not_found])
 }
 
